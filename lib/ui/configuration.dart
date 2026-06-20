@@ -20,6 +20,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:proxypin/network/util/logger.dart';
 import 'package:proxypin/utils/platform.dart';
+import 'package:proxypin/mcp/mcp_config.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// @author wanghongen
@@ -108,6 +109,9 @@ class AppConfiguration {
 
   /// 关闭窗口时最小化到系统托盘
   bool? minimizeToTray;
+
+  /// MCP Server 配置
+  McpServerConfig? mcpConfig;
 
   AppConfiguration._();
 
@@ -227,6 +231,11 @@ class AppConfiguration {
         panelRatio = config['panelRatio'];
       }
       minimizeToTray = config['minimizeToTray'];
+
+      if (config['mcpEnabled'] != null ||
+          config['mcpPort'] != null) {
+        mcpConfig = McpServerConfig.fromJson(config);
+      }
     } catch (e) {
       logger.e(e);
     }
@@ -273,6 +282,7 @@ class AppConfiguration {
         "windowPosition": windowPosition == null ? null : {"dx": windowPosition?.dx, "dy": windowPosition?.dy},
       if (Platforms.isDesktop()) 'panelRatio': panelRatio,
       if (Platforms.isDesktop()) 'minimizeToTray': minimizeToTray,
+      if (mcpConfig != null) ...mcpConfig!.toJson(),
     };
   }
 }

@@ -20,9 +20,11 @@ import 'package:proxypin/network/bin/server.dart';
 import 'package:proxypin/network/components/manager/hosts_manager.dart';
 import 'package:proxypin/network/components/manager/request_block_manager.dart';
 import 'package:proxypin/network/util/system_proxy.dart';
+import 'package:proxypin/ui/component/mcp_setting_dialog.dart';
 import 'package:proxypin/ui/component/multi_window.dart';
 import 'package:proxypin/ui/component/proxy_port_setting.dart';
 import 'package:proxypin/ui/component/widgets.dart';
+import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/ui/desktop/setting/about.dart';
 import 'package:proxypin/ui/desktop/setting/external_proxy.dart';
 import 'package:proxypin/ui/desktop/setting/hosts.dart';
@@ -80,6 +82,7 @@ class _SettingState extends State<Setting> {
             onPressed: () => MultiWindow.openWindow(localizations.script, 'ScriptWidget', size: const Size(800, 780))),
         item(localizations.breakpoint, onPressed: requestBreakpoint),
         item(localizations.externalProxy, onPressed: setExternalProxy),
+        item('MCP Server', onPressed: showMcpSetting),
         item(localizations.about, onPressed: showAbout),
       ],
     );
@@ -96,6 +99,15 @@ class _SettingState extends State<Setting> {
 
   void showAbout() {
     showDialog(context: context, builder: (context) => DesktopAbout());
+  }
+
+  ///显示 MCP Server 配置
+  void showMcpSetting() {
+    AppConfiguration.current?.then((appConfig) {
+      if (!mounted || appConfig == null) return;
+      showDialog(
+          context: context, builder: (context) => McpSettingDialog(appConfiguration: appConfig));
+    });
   }
 
   ///设置外部代理地址

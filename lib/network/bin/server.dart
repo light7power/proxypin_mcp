@@ -27,6 +27,9 @@ import 'package:proxypin/network/components/script.dart';
 import 'package:proxypin/network/handle/http_proxy_handle.dart';
 import 'package:proxypin/network/util/crts.dart';
 import 'package:proxypin/utils/platform.dart';
+import 'package:proxypin/mcp/mcp_server.dart';
+import 'package:proxypin/mcp/mcp_config.dart';
+import 'package:proxypin/ui/configuration.dart' as ui_config;
 
 import '../components/request_map.dart';
 import '../http/codec.dart';
@@ -110,8 +113,30 @@ class ProxyServer {
 
       //初始化证书
       CertificateManager.initCAConfig();
+
+      // MCP Server 自动启动
+      _autoStartMcp();
+
       return server;
     });
+  }
+
+  /// MCP Server 自动启动
+  void _autoStartMcp() {
+    try {
+      final uiConfig = ui_config.AppConfiguration.current;
+      if (uiConfig == null) return;
+
+      final mcpConfig = uiConfig.mcpConfig;
+      if (mcpConfig == null || !mcpConfig.enabled || !mcpConfig.autoStart) return;
+
+      // 创建并注册 MCP Server 作为 EventListener
+      final mcpServer = McpServer.create(mcpConfig);
+      addListener(mcpServer);
+      mcpServer.start();
+    } catch (e) {
+      logger.e('MCP auto start error: $e');
+    }
   }
 
   /// 停止代理服务

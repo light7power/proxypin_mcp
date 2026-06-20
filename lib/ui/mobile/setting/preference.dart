@@ -6,6 +6,7 @@ import 'package:proxypin/l10n/app_localizations.dart';
 import 'package:proxypin/network/bin/configuration.dart';
 import 'package:proxypin/network/bin/server.dart';
 import 'package:proxypin/network/util/logger.dart';
+import 'package:proxypin/ui/component/mcp_setting_dialog.dart';
 import 'package:proxypin/ui/component/widgets.dart';
 import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/ui/mobile/setting/theme.dart';
@@ -151,6 +152,14 @@ class _PreferenceState extends State<Preference> {
                         appConfiguration.clearConfirm = value;
                         appConfiguration.flushConfig();
                       })),
+              Divider(height: 0, thickness: 0.3, color: dividerColor),
+              ListTile(
+                  title: const Text('MCP Server'),
+                  subtitle: const Text('MCP protocol server for AI tool integration', style: TextStyle(fontSize: 12)),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () => showDialog(
+                      context: context,
+                      builder: (context) => McpSettingDialog(appConfiguration: appConfiguration))),
             ]),
             const SizedBox(height: 12),
             section([
