@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, stable, 'flutter-*' ]
+    branches: [ main, stable, "flutter-*" ]
     tags:
       - 'v*'
   workflow_dispatch:
@@ -28,7 +28,8 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
 
       - name: Setup signing keys
         env:
